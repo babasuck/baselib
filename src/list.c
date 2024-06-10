@@ -15,15 +15,23 @@ typedef struct List {
 } List;
 
 
-// Virtual Functions
+// Overrided Virtual Functions
+
 char* __list_ToString(Object* object) {
     List* list = (List*)object;
     size_t bufsize = 256;
     char* buf = (char*)malloc(bufsize * sizeof(*buf));
     memset(buf, 0, bufsize * sizeof(*buf));
-    snprintf(buf, bufsize, "List of size - %d, capacity - %d", list->size, list->capacity);
+    snprintf(buf, bufsize, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_HashCode((Object*)list));
     return buf;
 }
+
+int __list_HashCode(Object* object) {
+    List* list = (List*)object;
+    int hashCode = (list->capacity >> list->size) + 100;
+    return hashCode;
+}
+
 
 
 List* List_alloc() {
@@ -33,9 +41,12 @@ List* List_alloc() {
 void List_ctr(List* list) {
     Object_ctr(&list->object, "List");
     list->size = 0;
-    list->capacity = INITIAL_SIZE;
+    list->capacity = INITIAL_CAPACITY;
     list->data = calloc(list->capacity, sizeof(void*));
+
+    // Setting V-Table
     list->object.toString = __list_ToString;
+    list->object.hashCode = __list_HashCode;
 }
 
 void List_dtor(List* list) {

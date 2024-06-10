@@ -3,8 +3,12 @@
 
 // Virtual Functions
 typedef char* (*ToString) (Object* object);
+typedef int (*HashCode) (Object* object);
 
 typedef struct Object {
-    char* name;
+    // V-Table
     ToString toString;
+    HashCode hashCode;
+    char* name;
 } Object;
+

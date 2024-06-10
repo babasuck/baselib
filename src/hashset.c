@@ -1,6 +1,7 @@
 #include "baselib.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define INITIAL_CAPACITY 100
 
@@ -12,7 +13,7 @@ typedef struct Bucket {
 
 
 typedef struct HashSet {
-    Bucket* buckets;
+    Bucket** buckets;
     uint64_t capacity;
 } HashSet;
 
@@ -37,7 +38,7 @@ HashSet* HashSet_alloc() {
 
 void HashSet_ctor(HashSet* hashSet) {
     hashSet->capacity = INITIAL_CAPACITY;
-    Bucket* buckets = (Buckets*)calloc(hashSet->capacity, sizeof(Bucket));
+    Bucket** buckets = (Bucket**)calloc(hashSet->capacity, sizeof(Bucket*));
     for(int i = 0; i < hashSet->capacity; i++) {
         buckets[i] = __Bucket_alloc();
         __Bucket_ctor(buckets[i]);
