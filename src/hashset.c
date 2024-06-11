@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define INITIAL_CAPACITY 100
 
@@ -30,6 +31,7 @@ char* __Bucket_ToString(Object* object) {
 typedef struct HashSet {
     Object object;
     Bucket** buckets;
+    uint64_t size;
     uint64_t capacity;
 } HashSet;
 
@@ -59,6 +61,7 @@ HashSet* HashSet_alloc() {
 void HashSet_ctor(HashSet* hashSet) {
     Object_ctr((Object*)hashSet, "HashSet");
     hashSet->capacity = INITIAL_CAPACITY;
+    hashSet->size = 0;
     Bucket** buckets = (Bucket**)calloc(hashSet->capacity, sizeof(Bucket*));
     for(int i = 0; i < hashSet->capacity; i++) {
         buckets[i] = __Bucket_alloc();
@@ -78,6 +81,27 @@ int HashSet_add(HashSet* hashSet, Object* el) {
     if (el == NULL) {
         return -1;
     }
+    if (hashSet->size >= hashSet->capacity) {
+        size_t new_capacity = hashSet->capacity * 2;
+        Bucket** newBuckets = (Bucket**)realloc(buckets, new_capacity * sizeof(Bucket*));
+        for(int i = 0; i < new_capacity; i++) {
+            newBuckets[i] = __Bucket_alloc();
+            __Bucket_ctor(newBuckets[i]);
+        }
+        for (int i = 0; i <  hashSet->capacity; i++) {
+            if(List_getSize(hashSet->buckets[i]->elements) > 0) {
+                // Re hash
+                for(j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
+                    Object* el = List_at(hashSet->buckets[i], j);
+                    int newBucketNum = Object_HashCode(el) % new_capacity;
+                    List_add(newBuckets[newBucketNum]->elements, el);
+                }
+                __Bucket_dtor(hashSet->buckets[i]);
+            }
+        }
+        hashSet->buckets = buckets;
+        hashSet->capacity new_capacity;
+    }
     size_t bucketNum = Object_HashCode(el) % hashSet->capacity;
     List_add(hashSet->buckets[bucketNum]->elements, el);
 }
@@ -88,4 +112,9 @@ void HashSet_print(HashSet* hashSet) {
         printf("%s\n", buffer);
         free(buffer);
     }
+}
+
+bool HashSet_contains(HashSet* hashSet, Object* object) {
+    int hashCode = Object_HashCode(object);
+
 }

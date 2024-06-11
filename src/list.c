@@ -84,5 +84,13 @@ void List_print(List* list) {
     printf("]");
 }
 
+size_t List_getSize(List* list) {
+    return list->size;
+}
+
+Object* List_at(List* list, size_t at) {
+    return list->data[at];
+}
+
 
 
