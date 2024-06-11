@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     Integer_ctor(int5, 5);
 
     List* list = List_alloc();
-    List_ctr(list);
+    List_ctor(list);
 
     List_add(list, (Object*)int1);
     List_add(list, (Object*)int2);

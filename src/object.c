@@ -26,7 +26,7 @@ Object* __default_clone(Object* object) {
     //Not implemented
 }
 
-void Object_ctr(Object* obj, char* name) {
+void Object_ctor(Object* obj, char* name) {
     obj->name = (char*)malloc((strlen(name) + 1) * sizeof(*obj->name));
     strcpy(obj->name, name);
     // Setting V-Table

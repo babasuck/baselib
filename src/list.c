@@ -42,14 +42,12 @@ int __list_HashCode(Object* object) {
     return hashCode;
 }
 
-
-
 List* List_alloc() {
     return (List*)malloc(sizeof(List));
 }
 
-void List_ctr(List* list) {
-    Object_ctr((Object*)list, "List");
+void List_ctor(List* list) {
+    Object_ctor((Object*)list, "List");
     list->size = 0;
     list->capacity = INITIAL_CAPACITY;
     list->data = (Object**)calloc(list->capacity, sizeof(Object*));

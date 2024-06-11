@@ -40,9 +40,9 @@ Bucket* __Bucket_alloc() {
 }
 
 void __Bucket_ctor(Bucket* bucket) {
-    Object_ctr((Object*)bucket, "Bucket");
+    Object_ctor((Object*)bucket, "Bucket");
     List* list = List_alloc();
-    List_ctr(list);
+    List_ctor(list);
     bucket->elements = list;
 
     // Setting V-Table
@@ -60,7 +60,7 @@ HashSet* HashSet_alloc() {
 }
 
 void HashSet_ctor(HashSet* hashSet) {
-    Object_ctr((Object*)hashSet, "HashSet");
+    Object_ctor((Object*)hashSet, "HashSet");
     hashSet->capacity = INITIAL_CAPACITY;
     hashSet->size = 0;
     Bucket** buckets = (Bucket**)calloc(hashSet->capacity, sizeof(Bucket*));
