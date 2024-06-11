@@ -83,7 +83,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
     }
     if (hashSet->size >= hashSet->capacity) {
         size_t new_capacity = hashSet->capacity * 2;
-        Bucket** newBuckets = (Bucket**)realloc(buckets, new_capacity * sizeof(Bucket*));
+        Bucket** newBuckets = (Bucket**)realloc(hashSet->buckets, new_capacity * sizeof(Bucket*));
         for(int i = 0; i < new_capacity; i++) {
             newBuckets[i] = __Bucket_alloc();
             __Bucket_ctor(newBuckets[i]);
@@ -91,16 +91,16 @@ int HashSet_add(HashSet* hashSet, Object* el) {
         for (int i = 0; i <  hashSet->capacity; i++) {
             if(List_getSize(hashSet->buckets[i]->elements) > 0) {
                 // Re hash
-                for(j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
-                    Object* el = List_at(hashSet->buckets[i], j);
+                for(int j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
+                    Object* el = List_at(hashSet->buckets[i]->elements, j);
                     int newBucketNum = Object_HashCode(el) % new_capacity;
                     List_add(newBuckets[newBucketNum]->elements, el);
                 }
             }
             __Bucket_dtor(hashSet->buckets[i]);
         }
-        hashSet->buckets = buckets;
-        hashSet->capacity new_capacity;
+        hashSet->buckets = newBuckets;
+        hashSet->capacity = new_capacity;
     }
     size_t bucketNum = Object_HashCode(el) % hashSet->capacity;
     List_add(hashSet->buckets[bucketNum]->elements, el);
