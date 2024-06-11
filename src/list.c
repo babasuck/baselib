@@ -19,10 +19,20 @@ typedef struct List {
 
 char* __list_ToString(Object* object) {
     List* list = (List*)object;
-    size_t bufsize = 256;
+    size_t bufsize = list->size * 64 + 256;
     char* buf = (char*)malloc(bufsize * sizeof(*buf));
     memset(buf, 0, bufsize * sizeof(*buf));
-    snprintf(buf, bufsize, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_HashCode((Object*)list));
+    strcat(buf, "[ ");
+    for(int i = 0; i < list->size; i++) {
+        char* buffer = Object_ToString((Object*)list->data[i]);
+        strcat(buffer, " ");
+        strcat(buf, buffer);
+        free(buffer);
+    }
+    strcat(buf, "] ");
+    char fstr[255] = {};
+    sprintf(fstr, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_HashCode((Object*)list));
+    strcat(buf, fstr);
     return buf;
 }
 

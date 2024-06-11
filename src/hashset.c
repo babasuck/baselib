@@ -17,8 +17,14 @@ typedef struct Bucket {
 // Virtual Functions
 
 char* __Bucket_ToString(Object* object) {
-    Bucket* bucket = (Bucket*)bucket;
-    return Object_ToString((Object*)bucket->elements);
+    Bucket* bucket = (Bucket*)object;
+    char* buf = Object_ToString((Object*)bucket->elements);
+    int size = strlen(buf) * sizeof(*buf);
+    char* str = (char*)malloc(size + 225);
+    strcpy(str, "Bucket ");
+    strncat(str, buf, size);
+    free(buf);
+    return str;
 }
 
 typedef struct HashSet {
@@ -51,6 +57,7 @@ HashSet* HashSet_alloc() {
 }
 
 void HashSet_ctor(HashSet* hashSet) {
+    Object_ctr((Object*)hashSet, "HashSet");
     hashSet->capacity = INITIAL_CAPACITY;
     Bucket** buckets = (Bucket**)calloc(hashSet->capacity, sizeof(Bucket*));
     for(int i = 0; i < hashSet->capacity; i++) {
@@ -77,7 +84,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
 
 void HashSet_print(HashSet* hashSet) {
     for (int i = 0; i < hashSet->capacity; i++) {
-        char* buffer = Object_ToString((Object*)hashSet->buckets[i]);
+        char* buffer = Object_ToString((Object*)(hashSet->buckets[i]));
         printf("%s\n", buffer);
         free(buffer);
     }

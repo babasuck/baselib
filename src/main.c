@@ -23,6 +23,15 @@ int main(int argc, char** argv) {
     List_add(list, (Object*)int4);
     List_add(list, (Object*)int5);
 
-    printf(Object_ToString((Object*)list));
+    HashSet* hashSet = HashSet_alloc();
+    HashSet_ctor(hashSet); 
+    HashSet_add(hashSet, (Object*)int1);
+    HashSet_add(hashSet, (Object*)int2);
+    HashSet_add(hashSet, (Object*)int3);
+    HashSet_add(hashSet, (Object*)int4);
+    HashSet_add(hashSet, (Object*)int5);
+    HashSet_add(hashSet, (Object*)int1);
+
+    HashSet_print(hashSet);
 
 }
