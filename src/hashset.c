@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define INITIAL_CAPACITY 100
+#define INITIAL_CAPACITY 5
 
 typedef struct Bucket Bucket;
 
@@ -50,8 +50,9 @@ void __Bucket_ctor(Bucket* bucket) {
 }
 
 void __Bucket_dtor(Bucket* bucket) {
-    List_dtor(bucket->elements);
     Object_dtor((Object*)bucket);
+    List_dtor(bucket->elements);
+    free(bucket);
 }
 
 HashSet* HashSet_alloc() {
@@ -71,10 +72,12 @@ void HashSet_ctor(HashSet* hashSet) {
 }
 
 void HashSet_dtor(HashSet* hashSet) {
+    Object_dtor((Object*)hashSet);
     for(int i = 0; i < hashSet->capacity; i++) {
         __Bucket_dtor(hashSet->buckets[i]);
     }
-    Object_dtor((Object*)hashSet);
+    free(hashSet->buckets);
+    free(hashSet);
 }
 
 int HashSet_add(HashSet* hashSet, Object* el) {
@@ -83,14 +86,15 @@ int HashSet_add(HashSet* hashSet, Object* el) {
     }
     if (hashSet->size >= hashSet->capacity) {
         size_t new_capacity = hashSet->capacity * 2;
-        Bucket** newBuckets = (Bucket**)realloc(hashSet->buckets, new_capacity * sizeof(Bucket*));
+        //size_t a = List_getSize(hashSet->buckets[0]->elements);
+        Bucket** newBuckets = (Bucket**)calloc(new_capacity, sizeof(Bucket*));
         for(int i = 0; i < new_capacity; i++) {
             newBuckets[i] = __Bucket_alloc();
             __Bucket_ctor(newBuckets[i]);
         }
         for (int i = 0; i <  hashSet->capacity; i++) {
             if(List_getSize(hashSet->buckets[i]->elements) > 0) {
-                // Re hash
+                // Rehash
                 for(int j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
                     Object* el = List_at(hashSet->buckets[i]->elements, j);
                     int newBucketNum = Object_HashCode(el) % new_capacity;
@@ -99,11 +103,14 @@ int HashSet_add(HashSet* hashSet, Object* el) {
             }
             __Bucket_dtor(hashSet->buckets[i]);
         }
+        free(hashSet->buckets);
         hashSet->buckets = newBuckets;
         hashSet->capacity = new_capacity;
     }
     size_t bucketNum = Object_HashCode(el) % hashSet->capacity;
     List_add(hashSet->buckets[bucketNum]->elements, el);
+    hashSet->size++;
+    return 0;
 }
 
 void HashSet_print(HashSet* hashSet) {
