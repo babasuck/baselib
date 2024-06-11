@@ -9,7 +9,7 @@
 
 typedef struct List {
     Object object;
-    void** data;
+    Object** data;
     uint64_t size;
     uint64_t capacity;
 } List;
@@ -42,7 +42,7 @@ void List_ctr(List* list) {
     Object_ctr(&list->object, "List");
     list->size = 0;
     list->capacity = INITIAL_CAPACITY;
-    list->data = calloc(list->capacity, sizeof(void*));
+    list->data = (Object**)calloc(list->capacity, sizeof(Object*));
 
     // Setting V-Table
     list->object.toString = __list_ToString;
@@ -51,23 +51,27 @@ void List_ctr(List* list) {
 
 void List_dtor(List* list) {
     free(list->data);
-    free(list);
+    Object_dtor((Object*)list);
 }
 
-void List_add(List* list, void* el) {
+int List_add(List* list, Object* el) {
+    if(el == NULL)
+        return -1;
     if (list->size >= list->capacity) {
         list->capacity *= 2;
-        list->data = realloc(list->data, list->capacity * sizeof(void*));
+        list->data = (Object**)realloc(list->data, list->capacity * sizeof(void*));
     }
     list->data[list->size++] = el;
 }
 
 void List_print(List* list) {
+    printf("[ ");
     for(int i = 0; i < list->size; i++) {
         char* buffer = Object_ToString((Object*)list->data[i]);
-        printf("%s\n", buffer);
+        printf("%s ", buffer);
         free(buffer);
     }
+    printf("]");
 }
 
 
