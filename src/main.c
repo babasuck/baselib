@@ -30,6 +30,11 @@ int main(int argc, char** argv) {
     HashSet_add(hashSet, (Object*)int3);
     HashSet_add(hashSet, (Object*)int4);
     HashSet_add(hashSet, (Object*)int5);
+    
+    HashSet_print(hashSet);
+
+    printf("--------------------------------------\n");
+
     HashSet_add(hashSet, (Object*)int1);
 
     HashSet_print(hashSet);

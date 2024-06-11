@@ -1,5 +1,6 @@
 #pragma once
 
+
 typedef struct Object Object;
 
 void Object_ctr(Object* obj, const char* name);

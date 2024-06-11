@@ -31,8 +31,8 @@ void Object_ctr(Object* obj, const char* name) {
 }
 
 void Object_dtor(Object* obj) {
-    free(obj->name);
-    free(obj);
+    //free(obj->name);
+    //free(obj);
 }
 
 char* Object_ToString(Object* object) {

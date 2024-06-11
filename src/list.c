@@ -62,6 +62,7 @@ void List_ctr(List* list) {
 void List_dtor(List* list) {
     free(list->data);
     Object_dtor((Object*)list);
+    free(list);
 }
 
 int List_add(List* list, Object* el) {

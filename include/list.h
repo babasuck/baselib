@@ -1,6 +1,7 @@
 #pragma once
 
 #include "object.h"
+#include <stdlib.h>
 
 typedef struct List List;
 

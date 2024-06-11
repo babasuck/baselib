@@ -37,6 +37,7 @@ void Integer_ctor(Integer* integer, int data) {
 
 void Integer_dtor(Integer* integer) {
     Object_dtor((Object*)integer);
+    free(integer);
 }
 
 
