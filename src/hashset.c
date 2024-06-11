@@ -96,8 +96,8 @@ int HashSet_add(HashSet* hashSet, Object* el) {
                     int newBucketNum = Object_HashCode(el) % new_capacity;
                     List_add(newBuckets[newBucketNum]->elements, el);
                 }
-                __Bucket_dtor(hashSet->buckets[i]);
             }
+            __Bucket_dtor(hashSet->buckets[i]);
         }
         hashSet->buckets = buckets;
         hashSet->capacity new_capacity;
