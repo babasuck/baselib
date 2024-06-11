@@ -22,23 +22,31 @@ int __default_HashCode(Object* object) {
     return hashCode;
 }
 
-void Object_ctr(Object* obj, const char* name) {
-    obj->name = (char*)malloc(strlen(name) * sizeof(*obj->name));
-    strncpy(obj->name, name, sizeof(name));
+Object* __default_clone(Object* object) {
+    //Not implemented
+}
+
+void Object_ctr(Object* obj, char* name) {
+    obj->name = (char*)malloc((strlen(name) + 1) * sizeof(*obj->name));
+    strcpy(obj->name, name);
     // Setting V-Table
     obj->toString = __default_ToString;
     obj->hashCode = __default_HashCode;
+    obj->clone = __default_clone;
 }
 
 void Object_dtor(Object* obj) {
-    //free(obj->name);
-    //free(obj);
+    free(obj->name);
 }
 
-char* Object_ToString(Object* object) {
+char* Object_toString(Object* object) {
     return object->toString(object);
 }
 
-int Object_HashCode(Object* object) {
+int Object_hashCode(Object* object) {
     return object->hashCode(object);
+}
+
+Object* Object_clone(Object* object) {
+    return object->clone(object);
 }

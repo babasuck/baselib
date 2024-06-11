@@ -24,14 +24,14 @@ char* __list_ToString(Object* object) {
     memset(buf, 0, bufsize * sizeof(*buf));
     strcat(buf, "[ ");
     for(int i = 0; i < list->size; i++) {
-        char* buffer = Object_ToString((Object*)list->data[i]);
+        char* buffer = Object_toString((Object*)list->data[i]);
         strcat(buffer, " ");
         strcat(buf, buffer);
         free(buffer);
     }
     strcat(buf, "] ");
     char fstr[255] = {};
-    sprintf(fstr, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_HashCode((Object*)list));
+    sprintf(fstr, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_hashCode((Object*)list));
     strcat(buf, fstr);
     return buf;
 }
@@ -49,7 +49,7 @@ List* List_alloc() {
 }
 
 void List_ctr(List* list) {
-    Object_ctr(&list->object, "List");
+    Object_ctr((Object*)list, "List");
     list->size = 0;
     list->capacity = INITIAL_CAPACITY;
     list->data = (Object**)calloc(list->capacity, sizeof(Object*));
@@ -60,8 +60,8 @@ void List_ctr(List* list) {
 }
 
 void List_dtor(List* list) {
-    free(list->data);
     Object_dtor((Object*)list);
+    free(list->data);
     free(list);
 }
 
@@ -78,7 +78,7 @@ int List_add(List* list, Object* el) {
 void List_print(List* list) {
     printf("[ ");
     for(int i = 0; i < list->size; i++) {
-        char* buffer = Object_ToString((Object*)list->data[i]);
+        char* buffer = Object_toString((Object*)list->data[i]);
         printf("%s ", buffer);
         free(buffer);
     }

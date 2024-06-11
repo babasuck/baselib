@@ -19,7 +19,7 @@ typedef struct Bucket {
 
 char* __Bucket_ToString(Object* object) {
     Bucket* bucket = (Bucket*)object;
-    char* buf = Object_ToString((Object*)bucket->elements);
+    char* buf = Object_toString((Object*)bucket->elements);
     int size = strlen(buf) * sizeof(*buf);
     char* str = (char*)malloc(size + 225);
     strcpy(str, "Bucket ");
@@ -40,7 +40,7 @@ Bucket* __Bucket_alloc() {
 }
 
 void __Bucket_ctor(Bucket* bucket) {
-    Object_ctr(&bucket->object, "Bucket");
+    Object_ctr((Object*)bucket, "Bucket");
     List* list = List_alloc();
     List_ctr(list);
     bucket->elements = list;
@@ -81,7 +81,7 @@ void HashSet_dtor(HashSet* hashSet) {
 }
 
 int HashSet_add(HashSet* hashSet, Object* el) {
-    if (el == NULL) {
+    if (HashSet_contains(hashSet, el)) {
         return -1;
     }
     if (hashSet->size >= hashSet->capacity) {
@@ -97,7 +97,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
                 // Rehash
                 for(int j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
                     Object* el = List_at(hashSet->buckets[i]->elements, j);
-                    int newBucketNum = Object_HashCode(el) % new_capacity;
+                    int newBucketNum = Object_hashCode(el) % new_capacity;
                     List_add(newBuckets[newBucketNum]->elements, el);
                 }
             }
@@ -107,7 +107,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
         hashSet->buckets = newBuckets;
         hashSet->capacity = new_capacity;
     }
-    size_t bucketNum = Object_HashCode(el) % hashSet->capacity;
+    size_t bucketNum = Object_hashCode(el) % hashSet->capacity;
     List_add(hashSet->buckets[bucketNum]->elements, el);
     hashSet->size++;
     return 0;
@@ -115,13 +115,18 @@ int HashSet_add(HashSet* hashSet, Object* el) {
 
 void HashSet_print(HashSet* hashSet) {
     for (int i = 0; i < hashSet->capacity; i++) {
-        char* buffer = Object_ToString((Object*)(hashSet->buckets[i]));
+        char* buffer = Object_toString((Object*)(hashSet->buckets[i]));
         printf("%s\n", buffer);
         free(buffer);
     }
 }
 
 bool HashSet_contains(HashSet* hashSet, Object* object) {
-    int hashCode = Object_HashCode(object);
-
+    int num = Object_hashCode(object) % hashSet->capacity;
+    for(int i = 0; i < List_getSize(hashSet->buckets[num]->elements); i++) {
+        if(List_at(hashSet->buckets[num]->elements, i) == object) {
+            return true;
+        }
+    }
+    return false;
 }
