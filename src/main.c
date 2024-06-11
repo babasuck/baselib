@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
 
     List* list = List_alloc();
     List_ctr(list);
+
     List_add(list, (Object*)int1);
     List_add(list, (Object*)int2);
     List_add(list, (Object*)int3);
@@ -29,14 +30,8 @@ int main(int argc, char** argv) {
     HashSet_add(hashSet, (Object*)int2);
     HashSet_add(hashSet, (Object*)int3);
     HashSet_add(hashSet, (Object*)int4);
-    HashSet_add(hashSet, (Object*)int5);
-    
-    HashSet_print(hashSet);
 
-    printf("--------------------------------------\n");
+    printf("%d", HashSet_contains(hashSet, int5));
 
-    HashSet_add(hashSet, (Object*)int1);
-
-    HashSet_print(hashSet);
 
 }
