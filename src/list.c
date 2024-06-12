@@ -50,7 +50,7 @@ void List_ctor(List* list) {
     Object_ctor((Object*)list, "List");
     list->size = 0;
     list->capacity = INITIAL_CAPACITY;
-    list->data = (Object**)calloc(list->capacity, sizeof(Object*));
+    list->data = (Object**)malloc(list->capacity * sizeof(Object*));
 
     // Setting V-Table
     list->object.toString = __list_ToString;
