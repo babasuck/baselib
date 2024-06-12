@@ -63,7 +63,7 @@ void HashSet_ctor(HashSet* hashSet) {
     Object_ctor((Object*)hashSet, "HashSet");
     hashSet->capacity = INITIAL_CAPACITY;
     hashSet->size = 0;
-    Bucket** buckets = (Bucket**)calloc(hashSet->capacity, sizeof(Bucket*));
+    Bucket** buckets = (Bucket**)malloc(hashSet->capacity * sizeof(Bucket*));
     for(int i = 0; i < hashSet->capacity; i++) {
         buckets[i] = __Bucket_alloc();
         __Bucket_ctor(buckets[i]);
@@ -87,7 +87,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
     if (hashSet->size >= hashSet->capacity) {
         size_t new_capacity = hashSet->capacity * 2;
         //size_t a = List_getSize(hashSet->buckets[0]->elements);
-        Bucket** newBuckets = (Bucket**)calloc(new_capacity, sizeof(Bucket*));
+        Bucket** newBuckets = (Bucket**)malloc(new_capacity * sizeof(Bucket*));
         for(int i = 0; i < new_capacity; i++) {
             newBuckets[i] = __Bucket_alloc();
             __Bucket_ctor(newBuckets[i]);

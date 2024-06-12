@@ -1,5 +1,8 @@
+#include "baselib.h"
+
 #include "object.h"
 #include "object_p.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

@@ -1,8 +1,10 @@
 #include "baselib.h"
 #include "object.h"
+
 #include <stdio.h>
 
 int main(int argc, char** argv) {
+
     Integer* int1 = Integer_alloc();
     Integer* int2 = Integer_alloc();
     Integer* int3 = Integer_alloc();
@@ -31,7 +33,11 @@ int main(int argc, char** argv) {
     HashSet_add(hashSet, (Object*)int3);
     HashSet_add(hashSet, (Object*)int4);
 
-    printf("%d", HashSet_contains(hashSet, int5));
-
-
+    Integer_dtor(int1);
+    Integer_dtor(int2);
+    Integer_dtor(int3);
+    Integer_dtor(int4);
+    Integer_dtor(int5);
+    List_dtor(list);
+    HashSet_dtor(hashSet);
 }
