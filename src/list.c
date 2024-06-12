@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#define INITIAL_CAPACITY 100
+#define INITIAL_CAPACITY 1
 
 typedef struct List {
     Object object;
-    Object** data;
     uint64_t size;
     uint64_t capacity;
+    Object** data;
 } List;
 
 
@@ -68,10 +68,18 @@ int List_add(List* list, Object* el) {
         return -1;
     if (list->size >= list->capacity) {
         list->capacity *= 2;
-        list->data = (Object**)realloc(list->data, list->capacity * sizeof(void*));
+        Object** newData = (Object**)realloc(list->data, list->capacity * sizeof(Object*));
+        for (size_t i = 0; i < list->size; i++) {
+            newData[i] = list->data[i];
+        }
+        newData[list->size++] = el;
+        list->data = newData;
+        return 0;
     }
     list->data[list->size++] = el;
+    return 0;
 }
+
 
 void List_print(List* list) {
     printf("[ ");
