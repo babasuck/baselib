@@ -26,12 +26,12 @@ int main(int argc, char** argv) {
     List_add(list, (Object*)int4);
     List_add(list, (Object*)int5);
 
-    HashSet* hashSet = HashSet_alloc();
-    HashSet_ctor(hashSet); 
-    HashSet_add(hashSet, (Object*)int1);
-    HashSet_add(hashSet, (Object*)int2);
-    HashSet_add(hashSet, (Object*)int3);
-    HashSet_add(hashSet, (Object*)int4);
+    // HashSet* hashSet = HashSet_alloc();
+    // HashSet_ctor(hashSet); 
+    // HashSet_add(hashSet, (Object*)int1);
+    // HashSet_add(hashSet, (Object*)int2);
+    // HashSet_add(hashSet, (Object*)int3);
+    // HashSet_add(hashSet, (Object*)int4);
 
     Integer_dtor(int1);
     Integer_dtor(int2);
@@ -39,5 +39,5 @@ int main(int argc, char** argv) {
     Integer_dtor(int4);
     Integer_dtor(int5);
     List_dtor(list);
-    HashSet_dtor(hashSet);
+   // HashSet_dtor(hashSet);
 }
