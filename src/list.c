@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define INITIAL_CAPACITY 1
+#define INITIAL_CAPACITY 100
 
 typedef struct List {
     Object object;
