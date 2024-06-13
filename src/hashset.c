@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define INITIAL_CAPACITY 5
+#define INITIAL_CAPACITY 100
 
 typedef struct Bucket Bucket;
 

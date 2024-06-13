@@ -5,10 +5,14 @@
 
 int malloc_sum = 0, free_sum = 0;
 
+
+
 typedef struct MemoryBlock {
     size_t size;
     char data[];  
 } MemoryBlock;
+
+
 
 void* antileak_malloc(size_t n, const char* file, size_t line) {
     MemoryBlock* block = (MemoryBlock*)malloc(sizeof(*block) + n);

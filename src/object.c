@@ -26,7 +26,7 @@ int __default_HashCode(Object* object) {
 }
 
 Object* __default_clone(Object* object) {
-    //Not implemented
+    return object;
 }
 
 void Object_ctor(Object* obj, char* name) {

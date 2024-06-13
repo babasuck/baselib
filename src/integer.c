@@ -54,5 +54,6 @@ void Integer_dtor(Integer* integer) {
 Integer* Integer_create(uint64_t data) {
     Integer* integer = Integer_alloc();
     Integer_ctor(integer, data);
+    return integer;
 }
 
