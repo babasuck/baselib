@@ -1,6 +1,5 @@
 #include "baselib.h"
 
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +19,7 @@ typedef struct Bucket {
 char* __Bucket_ToString(Object* object) {
     Bucket* bucket = (Bucket*)object;
     char* buf = Object_toString((Object*)bucket->elements);
-    int size = strlen(buf) * sizeof(*buf);
+    size_t size = strlen(buf) * sizeof(*buf);
     char* str = (char*)malloc(size + 225);
     strcpy(str, "Bucket ");
     strncat(str, buf, size);
@@ -31,8 +30,8 @@ char* __Bucket_ToString(Object* object) {
 typedef struct HashSet {
     Object object;
     Bucket** buckets;
-    uint64_t size;
-    uint64_t capacity;
+    size_t size;
+    size_t capacity;
 } HashSet;
 
 Bucket* __Bucket_alloc() {
@@ -64,7 +63,7 @@ void HashSet_ctor(HashSet* hashSet) {
     hashSet->capacity = INITIAL_CAPACITY;
     hashSet->size = 0;
     Bucket** buckets = (Bucket**)malloc(hashSet->capacity * sizeof(Bucket*));
-    for(int i = 0; i < hashSet->capacity; i++) {
+    for(size_t i = 0; i < hashSet->capacity; i++) {
         buckets[i] = __Bucket_alloc();
         __Bucket_ctor(buckets[i]);
     }
@@ -73,11 +72,17 @@ void HashSet_ctor(HashSet* hashSet) {
 
 void HashSet_dtor(HashSet* hashSet) {
     Object_dtor((Object*)hashSet);
-    for(int i = 0; i < hashSet->capacity; i++) {
+    for(size_t i = 0; i < hashSet->capacity; i++) {
         __Bucket_dtor(hashSet->buckets[i]);
     }
     free(hashSet->buckets);
     free(hashSet);
+}
+
+HashSet* HashSet_create() {
+    HashSet* hashSet = HashSet_alloc();
+    HashSet_ctor(hashSet);
+    return hashSet;
 }
 
 int HashSet_add(HashSet* hashSet, Object* el) {
@@ -88,16 +93,16 @@ int HashSet_add(HashSet* hashSet, Object* el) {
         size_t new_capacity = hashSet->capacity * 2;
         //size_t a = List_getSize(hashSet->buckets[0]->elements);
         Bucket** newBuckets = (Bucket**)malloc(new_capacity * sizeof(Bucket*));
-        for(int i = 0; i < new_capacity; i++) {
+        for(size_t i = 0; i < new_capacity; i++) {
             newBuckets[i] = __Bucket_alloc();
             __Bucket_ctor(newBuckets[i]);
         }
-        for (int i = 0; i <  hashSet->capacity; i++) {
+        for (size_t i = 0; i <  hashSet->capacity; i++) {
             if(List_getSize(hashSet->buckets[i]->elements) > 0) {
                 // Rehash
-                for(int j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
+                for(size_t j = 0; j < List_getSize(hashSet->buckets[i]->elements); j++) {
                     Object* el = List_at(hashSet->buckets[i]->elements, j);
-                    int newBucketNum = Object_hashCode(el) % new_capacity;
+                    size_t newBucketNum = Object_hashCode(el) % new_capacity;
                     List_add(newBuckets[newBucketNum]->elements, el);
                 }
             }
@@ -114,7 +119,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
 }
 
 void HashSet_print(HashSet* hashSet) {
-    for (int i = 0; i < hashSet->capacity; i++) {
+    for (size_t i = 0; i < hashSet->capacity; i++) {
         char* buffer = Object_toString((Object*)(hashSet->buckets[i]));
         printf("%s\n", buffer);
         free(buffer);
@@ -122,8 +127,8 @@ void HashSet_print(HashSet* hashSet) {
 }
 
 bool HashSet_contains(HashSet* hashSet, Object* object) {
-    int num = Object_hashCode(object) % hashSet->capacity;
-    for(int i = 0; i < List_getSize(hashSet->buckets[num]->elements); i++) {
+    size_t num = Object_hashCode(object) % hashSet->capacity;
+    for(size_t i = 0; i < List_getSize(hashSet->buckets[num]->elements); i++) {
         if(List_at(hashSet->buckets[num]->elements, i) == object) {
             return true;
         }
