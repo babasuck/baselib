@@ -5,8 +5,8 @@
 
 typedef struct List List;
 
+List* List_create(); /* alloc + ctor */
 List* List_alloc();
-
 void List_ctor(List* list);
 void List_dtor(List* list);
 

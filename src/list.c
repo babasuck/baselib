@@ -1,6 +1,5 @@
 #include "baselib.h"
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,8 +8,8 @@
 
 typedef struct List {
     Object object;
-    uint64_t size;
-    uint64_t capacity;
+    size_t size;
+    size_t capacity;
     Object** data;
 } List;
 
@@ -61,6 +60,12 @@ void List_dtor(List* list) {
     Object_dtor((Object*)list);
     free(list->data);
     free(list);
+}
+
+List* List_create() {
+    List* list = List_alloc();
+    List_ctor(list);
+    return list;
 }
 
 int List_add(List* list, Object* el) {

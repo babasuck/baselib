@@ -7,7 +7,7 @@
 
 typedef struct Integer {
     Object object;
-    int data;
+    uint64_t data;
 } Integer;
 
 // Overrided Virtual functions
@@ -36,7 +36,7 @@ Integer* Integer_alloc() {
     return (Integer*)malloc(sizeof(Integer)); 
 }
 
-void Integer_ctor(Integer* integer, int data) {
+void Integer_ctor(Integer* integer, uint64_t data) {
     Object_ctor((Object*)integer, "Integer");
     integer->data = data;
 
@@ -51,4 +51,8 @@ void Integer_dtor(Integer* integer) {
     free(integer);
 }
 
+Integer* Integer_create(uint64_t data) {
+    Integer* integer = Integer_alloc();
+    Integer_ctor(integer, data);
+}
 

@@ -5,20 +5,13 @@
 
 int main(int argc, char** argv) {
 
-    Integer* int1 = Integer_alloc();
-    Integer* int2 = Integer_alloc();
-    Integer* int3 = Integer_alloc();
-    Integer* int4 = Integer_alloc();
-    Integer* int5 = Integer_alloc();
+    Integer* int1 = Integer_create(1);
+    Integer* int2 = Integer_create(2);
+    Integer* int3 = Integer_create(3);
+    Integer* int4 = Integer_create(4);
+    Integer* int5 = Integer_create(5);
 
-    Integer_ctor(int1, 1);
-    Integer_ctor(int2, 2);
-    Integer_ctor(int3, 3);
-    Integer_ctor(int4, 4);
-    Integer_ctor(int5, 5);
-
-    List* list = List_alloc();
-    List_ctor(list);
+    List* list = List_create();
 
     List_add(list, (Object*)int1);
     List_add(list, (Object*)int2);
@@ -26,12 +19,11 @@ int main(int argc, char** argv) {
     List_add(list, (Object*)int4);
     List_add(list, (Object*)int5);
 
-    // HashSet* hashSet = HashSet_alloc();
-    // HashSet_ctor(hashSet); 
-    // HashSet_add(hashSet, (Object*)int1);
-    // HashSet_add(hashSet, (Object*)int2);
-    // HashSet_add(hashSet, (Object*)int3);
-    // HashSet_add(hashSet, (Object*)int4);
+    HashSet* hashSet = HashSet_create();
+    HashSet_add(hashSet, (Object*)int1);
+    HashSet_add(hashSet, (Object*)int2);
+    HashSet_add(hashSet, (Object*)int3);
+    HashSet_add(hashSet, (Object*)int4);
 
     Integer_dtor(int1);
     Integer_dtor(int2);
@@ -39,5 +31,5 @@ int main(int argc, char** argv) {
     Integer_dtor(int4);
     Integer_dtor(int5);
     List_dtor(list);
-   // HashSet_dtor(hashSet);
+    HashSet_dtor(hashSet);
 }
