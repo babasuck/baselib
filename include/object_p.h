@@ -3,7 +3,7 @@
 
 // Virtual Functions
 typedef char* (*ToString) (Object* object);
-typedef int (*HashCode) (Object* object);
+typedef size_t (*HashCode) (Object* object);
 typedef Object* (*Clone) (Object*);
 
 typedef struct Object {

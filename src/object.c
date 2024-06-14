@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 // Virtual Functions
 
@@ -17,17 +18,14 @@ char* __default_ToString(Object* object) {
     return buf;
 }
 
-int __default_HashCode(Object* object) {
-    int hashCode = 0;
-    for(int i = 0; i < sizeof(object->name); i++) {
+size_t __default_HashCode(Object* object) {
+    size_t hashCode = 0;
+    for(size_t i = 0; i < sizeof(object->name); i++) {
         hashCode += object->name[i];
     }
     return hashCode;
 }
 
-Object* __default_clone(Object* object) {
-    return object;
-}
 
 void Object_ctor(Object* obj, char* name) {
     obj->name = (char*)malloc((strlen(name) + 1) * sizeof(*obj->name));
@@ -35,7 +33,7 @@ void Object_ctor(Object* obj, char* name) {
     // Setting V-Table
     obj->toString = __default_ToString;
     obj->hashCode = __default_HashCode;
-    obj->clone = __default_clone;
+    obj->clone = 0;
 }
 
 void Object_dtor(Object* obj) {
@@ -46,10 +44,11 @@ char* Object_toString(Object* object) {
     return object->toString(object);
 }
 
-int Object_hashCode(Object* object) {
+size_t Object_hashCode(Object* object) {
     return object->hashCode(object);
 }
 
 Object* Object_clone(Object* object) {
+    assert(object->clone);
     return object->clone(object);
 }

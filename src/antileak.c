@@ -13,7 +13,6 @@ typedef struct MemoryBlock {
 } MemoryBlock;
 
 
-
 void* antileak_malloc(size_t n, const char* file, size_t line) {
     MemoryBlock* block = (MemoryBlock*)malloc(sizeof(*block) + n);
     block->size = n;
