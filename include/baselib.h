@@ -1,6 +1,6 @@
 #pragma once
 
-#define _ANTILEAK
+//#define _ANTILEAK
 #include "antileak.h"
 
 // Base object

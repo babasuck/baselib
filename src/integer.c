@@ -19,7 +19,7 @@ char* __Integer_toString(Object* object) {
     return buf;
 }
 
-int __Integer_hashCode(Object* object) {
+size_t __Integer_hashCode(Object* object) {
     Integer* integer = (Integer*)object;
     return integer->data;
 }

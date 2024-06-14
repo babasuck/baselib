@@ -29,16 +29,25 @@ char* __list_ToString(Object* object) {
         free(buffer);
     }
     strcat(buf, "] ");
-    char fstr[255] = {};
-    sprintf(fstr, "List of size - %d, capacity - %d, hashCode - %d", list->size, list->capacity, Object_hashCode((Object*)list));
+    char fstr[255] = {0};
+    sprintf(fstr, "List of size - %zu, capacity - %zu, hashCode - %zu", list->size, list->capacity, Object_hashCode((Object*)list));
     strcat(buf, fstr);
     return buf;
 }
 
-int __list_HashCode(Object* object) {
+size_t __list_HashCode(Object* object) {
     List* list = (List*)object;
-    int hashCode = (list->capacity >> list->size) + 100;
+    size_t hashCode = (list->capacity >> list->size) + 100;
     return hashCode;
+}
+
+Object* __list_clone(Object* obj) {
+    List* list = (List*)obj;
+    List* newList = List_create();
+    newList->size = list->size;
+    newList->capacity = list->capacity;
+    memcpy(newList->data, list->data, list->size * sizeof(Object*));
+    return (Object*)newList;
 }
 
 List* List_alloc() {
@@ -54,6 +63,7 @@ void List_ctor(List* list) {
     // Setting V-Table
     list->object.toString = __list_ToString;
     list->object.hashCode = __list_HashCode;
+    list->object.clone = __list_clone;
 }
 
 void List_dtor(List* list) {
