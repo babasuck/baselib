@@ -14,3 +14,5 @@ typedef struct Object {
     char* name;
 } Object;
 
+char* Object_toString(Object* object);
+

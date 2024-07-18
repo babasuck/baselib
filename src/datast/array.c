@@ -1,23 +1,24 @@
 #include "baselib.h"
 
+#include "object_p.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #define INITIAL_CAPACITY 100
 
-typedef struct List {
+struct Array {
     Object object;
     size_t size;
     size_t capacity;
     Object** data;
-} List;
-
+};
 
 // Overrided Virtual Functions
 
-char* __list_ToString(Object* object) {
-    List* list = (List*)object;
+char* __array_ToString(Object* object) {
+    Array* list = (Array*)object;
     size_t bufsize = list->size * 64 + 256;
     char* buf = (char*)malloc(bufsize * sizeof(*buf));
     memset(buf, 0, bufsize * sizeof(*buf));
@@ -30,55 +31,55 @@ char* __list_ToString(Object* object) {
     }
     strcat(buf, "] ");
     char fstr[255] = {0};
-    sprintf(fstr, "List of size - %zu, capacity - %zu, hashCode - %zu", list->size, list->capacity, Object_hashCode((Object*)list));
+    sprintf(fstr, "Array of size - %zu, capacity - %zu, hashCode - %zu", list->size, list->capacity, Object_hashCode((Object*)list));
     strcat(buf, fstr);
     return buf;
 }
 
-size_t __list_HashCode(Object* object) {
-    List* list = (List*)object;
+size_t __array_HashCode(Object* object) {
+    Array* list = (Array*)object;
     size_t hashCode = (list->capacity >> list->size) + 100;
     return hashCode;
 }
 
-Object* __list_clone(Object* obj) {
-    List* list = (List*)obj;
-    List* newList = List_create();
+Object* __array_Clone(Object* obj) {
+    Array* list = (Array*)obj;
+    Array* newList = Array_create();
     newList->size = list->size;
     newList->capacity = list->capacity;
     memcpy(newList->data, list->data, list->size * sizeof(Object*));
     return (Object*)newList;
 }
 
-List* List_alloc() {
-    return (List*)malloc(sizeof(List));
+Array* Array_alloc() {
+    return (Array*)malloc(sizeof(Array));
 }
 
-void List_ctor(List* list) {
-    Object_ctor((Object*)list, "List");
+void Array_ctor(Array* list) {
+    Object_ctor((Object*)list, "Array");
     list->size = 0;
     list->capacity = INITIAL_CAPACITY;
     list->data = (Object**)malloc(list->capacity * sizeof(Object*));
 
     // Setting V-Table
-    list->object.toString = __list_ToString;
-    list->object.hashCode = __list_HashCode;
-    list->object.clone = __list_clone;
+    list->object.toString = __array_ToString;
+    list->object.hashCode = __array_HashCode;
+    list->object.clone = __array_Clone;
 }
 
-void List_dtor(List* list) {
+void Array_dtor(Array* list) {
     Object_dtor((Object*)list);
     free(list->data);
     free(list);
 }
 
-List* List_create() {
-    List* list = List_alloc();
-    List_ctor(list);
+Array* Array_create() {
+    Array* list = Array_alloc();
+    Array_ctor(list);
     return list;
 }
 
-int List_add(List* list, Object* el) {
+int Array_add(Array* list, Object* el) {
     if(el == NULL)
         return -1;
     if (list->size >= list->capacity) {
@@ -96,7 +97,7 @@ int List_add(List* list, Object* el) {
 }
 
 
-void List_print(List* list) {
+void Array_print(Array* list) {
     printf("[ ");
     for(int i = 0; i < list->size; i++) {
         char* buffer = Object_toString((Object*)list->data[i]);
@@ -106,11 +107,11 @@ void List_print(List* list) {
     printf("]");
 }
 
-size_t List_getSize(List* list) {
+size_t Array_getSize(Array* list) {
     return list->size;
 }
 
-Object* List_at(List* list, size_t at) {
+Object* Array_at(Array* list, size_t at) {
     return list->data[at];
 }
 

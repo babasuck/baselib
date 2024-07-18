@@ -1,35 +1,19 @@
 #include "baselib.h"
-#include "object.h"
 
 #include <stdio.h>
 
 #define ARRSIZE 10
 
 int main(int argc, char** argv) {
+    Integer* int1 = Integer_create(1);
+    Integer* int2 = Integer_create(2);
+    Integer* int3 = Integer_create(3);
 
-    List* list = List_create();
+    LinkedList* list = LinkedList_create();
+    LinkedList_print(list);
+    LinkedList_insertEnd(list, (Object*)int1);
+    LinkedList_insertEnd(list, (Object*)int2);
+    LinkedList_insertEnd(list, (Object*)int3);
+    LinkedList_print(list);
 
-    HashSet* hashSet = HashSet_create();
-
-    Integer* integers[ARRSIZE];
-
-    for(int i = 0; i < ARRSIZE; i++) {
-        Integer* inter = Integer_create(i);
-        integers[i] = inter;
-        List_add(list, (Object*)inter);
-        HashSet_add(hashSet, (Object*)inter);
-    }
-
-    List* list2 = (List*)Object_clone((Object*)list);
-    List_print(list);
-    printf("\n----------------------------------\n");
-    List_print(list2);
-    //HashSet_print(hashSet);
-
-    for(int i = 0; i < ARRSIZE; i++) {
-        Integer_dtor(integers[i]);
-    }
-
-    List_dtor(list);
-    HashSet_dtor(hashSet);
 }
