@@ -131,7 +131,7 @@ void HashSet_print(HashSet* hashSet) {
 bool HashSet_contains(HashSet* hashSet, Object* object) {
     size_t num = Object_hashCode(object) % hashSet->capacity;
     for(size_t i = 0; i < Array_getSize(hashSet->buckets[num]->elements); i++) {
-        if(Array_at(hashSet->buckets[num]->elements, i) == object) {
+        if(Object_hashCode((hashSet->buckets[num]->elements, i)) == Object_hashCode(object)) {
             return true;
         }
     }

@@ -15,5 +15,11 @@ int main(int argc, char** argv) {
     LinkedList_insertEnd(list, (Object*)int2);
     LinkedList_insertEnd(list, (Object*)int3);
     LinkedList_print(list);
-
+    printf("\n---------------------------------------\n");
+    LinkedList_insertStart(list, (Object*)int3);
+    LinkedList_print(list);
+    LinkedList_dtor(list);
+    Integer_dtor(int1);
+    Integer_dtor(int2);
+    Integer_dtor(int3);
 }

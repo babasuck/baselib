@@ -37,6 +37,11 @@ void __node_ctor(Node* node, Object* data) {
     node->object.toString = __node_ToString;
 }
 
+void __node_dtor(Node* node) {
+    Object_dtor((Object*)node);
+    free(node);
+}
+
 char* __node_ToString(Object* object) {
     Node* node = (Node*)object;
     char* objStr = Object_toString(node->data);
@@ -64,6 +69,17 @@ void LinkedList_ctor(LinkedList* list) {
     list->tail = NULL;
 }
 
+void LinkedList_dtor(LinkedList* list) {
+    Object_dtor((Object*)list);
+    Node* node = list->head;
+    while(node != NULL) {
+        Node* next = node->next;
+        __node_dtor(node);
+        node = next;
+    }
+    free(list);
+}
+
 LinkedList* LinkedList_create() {
     LinkedList* list = LinkedList_alloc();
     LinkedList_ctor(list);
@@ -71,23 +87,41 @@ LinkedList* LinkedList_create() {
 }
 
 int LinkedList_insertEnd(LinkedList* list, Object* el) {
-    if(el == NULL)
+    if (el == NULL)
         return -1;
-    if(list->len == 0) {
-        Node* firstNode = __node_alloc();
-        __node_ctor(firstNode, el);
-        firstNode->next = NULL;
-        firstNode->prev = NULL;
-        list->head = firstNode;
-        list->tail = firstNode;
+    Node* newNode = __node_alloc();
+    __node_ctor(newNode, el);
+    newNode->next = NULL;
+    if (list->len == 0) {
+        newNode->prev = NULL;
+        list->head = newNode;
+        list->tail = newNode;
     }
     else {
-        Node* newNode = __node_alloc();
-        __node_ctor(newNode, el);
         newNode->prev = list->tail;
         list->tail->next = newNode;
         list->tail = newNode;
+    }
+    list->len++;
+    return 0;
+}
+
+int LinkedList_insertStart(LinkedList* list, Object* el) {
+    if (el == NULL)
+        return -1;
+    Node* newNode = __node_alloc();
+    __node_ctor(newNode, el);
+    newNode->prev = NULL;
+    if(list->len == 0) {
         newNode->next = NULL;
+        list->head = newNode;
+        list->tail = newNode;
+    }
+    else {
+        Node* oldHead = list->head;
+        list->head = newNode;
+        newNode->next = oldHead;
+        oldHead->prev = newNode;
     }
     list->len++;
     return 0;

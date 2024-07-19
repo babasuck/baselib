@@ -5,12 +5,14 @@
 typedef char* (*ToString) (Object* object);
 typedef size_t (*HashCode) (Object* object);
 typedef Object* (*Clone) (Object*);
+typedef bool(*EqualsTo) (Object*, Object*);
 
 typedef struct Object {
     // V-Table
     ToString toString;
     HashCode hashCode;
     Clone clone;
+    EqualsTo equalsTo;
     char* name;
 } Object;
 
