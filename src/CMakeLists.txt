@@ -1,7 +1,8 @@
 add_executable(baselib
     antileak/antileak.c
     datast/hashset.c
-    datast/list.c 
+    datast/array.c 
+    datast/linkedlist.c
     types/integer.c
     base/object.c
     main.c

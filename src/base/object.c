@@ -4,6 +4,7 @@
 #include "object_p.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
@@ -26,6 +27,10 @@ size_t __default_HashCode(Object* object) {
     return hashCode;
 }
 
+bool __default_EqualsTo() {
+    return false;
+}
+
 
 void Object_ctor(Object* obj, char* name) {
     obj->name = (char*)malloc((strlen(name) + 1) * sizeof(*obj->name));
@@ -33,7 +38,8 @@ void Object_ctor(Object* obj, char* name) {
     // Setting V-Table
     obj->toString = __default_ToString;
     obj->hashCode = __default_HashCode;
-    obj->clone = 0;
+    obj->clone = 0; // Not implemented
+    obj->equalsTo =  __default_EqualsTo;
 }
 
 void Object_dtor(Object* obj) {
@@ -51,4 +57,8 @@ size_t Object_hashCode(Object* object) {
 Object* Object_clone(Object* object) {
     assert(object->clone);
     return object->clone(object);
+}
+
+bool Object_EqualsTo(Object* one, Object* two) {
+    return one->equalsTo(one, two);
 }
