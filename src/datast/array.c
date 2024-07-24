@@ -51,6 +51,20 @@ Object* __array_Clone(Object* obj) {
     return (Object*)newList;
 }
 
+bool __array_EqualsTo(Object* one, Object* two) {
+    if (strcmp(one->name, two->name) || (((Array*)one)->size != ((Array*)two)->size) || (((Array*)one)->capacity != ((Array*)two)->capacity))
+        return false;
+    else {
+        Array* arr1 = (Array*)one;
+        Array* arr2 = (Array*)two;
+        for(size_t i = 0; i < arr1->size; i++) {
+            if (Object_EqualsTo(arr1->data[i], arr2->data[i]) == false)
+                return false;
+        }
+        return true;
+    }
+}
+
 Array* Array_alloc() {
     return (Array*)malloc(sizeof(Array));
 }
@@ -65,6 +79,7 @@ void Array_ctor(Array* list) {
     list->object.toString = __array_ToString;
     list->object.hashCode = __array_HashCode;
     list->object.clone = __array_Clone;
+    list->object.equalsTo = __array_EqualsTo;
 }
 
 void Array_dtor(Array* list) {
@@ -94,6 +109,10 @@ int Array_add(Array* list, Object* el) {
     }
     list->data[list->size++] = el;
     return 0;
+}
+
+void Array_sort(Array* array) {
+    // TODO
 }
 
 

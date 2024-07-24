@@ -7,17 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Integer {
+struct Integer {
     Object object;
     uint64_t data;
-} Integer;
+};
 
 // Overrided Virtual functions
 
 char* __Integer_toString(Object* object) {
     Integer* integer = (Integer*)object;
     char* buf = (char*)malloc(255);
-    itoa(integer->data, buf, 10);
+    _ltoa(integer->data, buf, 10);
     return buf;
 }
 
@@ -33,6 +33,12 @@ Object* __Integer_clone(Object* object) {
     return (Object*)clone;
 }
 
+bool __Integer_EqualsTo(Object* one, Object* two) {
+    if (strcmp(one->name, two->name) || (((Integer*)one)->data != ((Integer*)two)->data))
+        return false;
+    return true;
+    
+}
 
 Integer* Integer_alloc() {
     return (Integer*)malloc(sizeof(Integer)); 
@@ -46,6 +52,7 @@ void Integer_ctor(Integer* integer, uint64_t data) {
     integer->object.hashCode = __Integer_hashCode;
     integer->object.toString = __Integer_toString;
     integer->object.clone = __Integer_clone;
+    integer->object.equalsTo = __Integer_EqualsTo;
 }
 
 void Integer_dtor(Integer* integer) {

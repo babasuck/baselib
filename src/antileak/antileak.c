@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 
-int malloc_sum = 0, free_sum = 0;
+size_t malloc_sum = 0, free_sum = 0;
 
 
 
@@ -39,4 +39,13 @@ void antileak_free(void* ptr, const char* file, size_t line) {
     free_sum += block->size;
     printf("Free in %s:%zu, all freed - %d byte\n", file, line, free_sum);
     free(block);
+}
+
+char* antileak_strdup(const char* s, const char* file, size_t line) {
+    size_t len = strlen(s) + 1;
+    char* new_str = (char*)antileak_malloc(len, file, line);
+    if (new_str) {
+        strcpy(new_str, s);
+    }
+    return new_str;
 }
