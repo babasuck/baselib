@@ -93,7 +93,7 @@ static void __Bucket_ctor(Bucket* bucket) {
 static void __Bucket_dtor(Bucket* bucket) {
     Object_dtor((Object*)bucket);
     for(size_t i = 0; i < LinkedList_getSize(bucket->elements); i++) {
-        __Element_dtor(LinkedList_at(bucket->elements, i));
+        __Element_dtor((Element*)LinkedList_at(bucket->elements, i));
     }
     LinkedList_dtor(bucket->elements);
     free(bucket);
@@ -147,7 +147,7 @@ int HashMap_add(HashMap* hashMap, const char* key, Object* value) {
         el->value = value;
         return 0;
     }
-    if (hashMap->size / hashMap->capacity >= 0.7) {
+    if ((double)hashMap->size / hashMap->capacity >= 0.7) {
         size_t new_capacity = hashMap->capacity * 2;
         Bucket** newBuckets = (Bucket**)malloc(new_capacity * sizeof(Bucket*));
         for(size_t i = 0; i < new_capacity; i++) {
@@ -172,6 +172,16 @@ int HashMap_add(HashMap* hashMap, const char* key, Object* value) {
     LinkedList_insertEnd(hashMap->buckets[bucketNum]->elements, (Object*)el);
     hashMap->size++;
     return 0;
+}
+
+Object* HashMap_get(HashMap* hashMap, const char* key) {
+    int64_t pos = HashMap_contains(hashMap, key);
+    if (pos != -1) {
+        size_t bucketNum = __HashMap_hash(key) % hashMap->capacity;
+        Element* el = (Element*)LinkedList_at(hashMap->buckets[bucketNum]->elements, pos);
+        return (Object*)(el->value);
+    }
+    return NULL;
 }
 
 void HashMap_print(HashMap* hashMap) {

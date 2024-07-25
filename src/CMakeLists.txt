@@ -4,6 +4,7 @@ add_executable(baselib
     datast/hashmap.c
     datast/array.c 
     datast/list.c
+    datast/stack.c
     types/integer.c
     base/object.c
     main.c

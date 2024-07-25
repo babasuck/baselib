@@ -166,6 +166,19 @@ int LinkedList_insertStart(LinkedList* list, Object* el) {
     return 0;
 }
 
+Object* LinkedList_removeStart(LinkedList* list) {
+    Node* oldHead = list->head;
+    Object* obj = oldHead->data;
+    list->head = oldHead->next;
+    __node_dtor(oldHead);
+    list->len--;
+    return obj;
+}
+
+Object* LinkedList_removeEnd(LinkedList* list) {
+    Object* obj = list->tail->data;
+}
+
 Object* LinkedList_at(LinkedList* list, size_t at) {
     if (at >= list->len)
         return NULL;
