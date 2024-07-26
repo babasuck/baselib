@@ -27,8 +27,8 @@ size_t __default_HashCode(Object* object) {
     return hashCode;
 }
 
-bool __default_EqualsTo() {
-    return false;
+bool __default_EqualsTo(Object* one, Object* two) {
+    return strcmp(one->name, two->name) == 0 ? true : false;
 }
 
 

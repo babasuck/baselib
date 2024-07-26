@@ -11,17 +11,17 @@
 
 typedef struct Bucket Bucket;
 
-typedef struct Bucket {
+struct Bucket {
     Object object;
-    Array* elements;
-} Bucket;
+    LinkedList* elements;
+};
 
 // Virtual Functions
 
-char* __Bucket_ToString(Object* object) {
+static char* __Bucket_ToString(Object* object) {
     Bucket* bucket = (Bucket*)object;
     char* buf = Object_toString((Object*)bucket->elements);
-    size_t size = strlen(buf) * sizeof(*buf);
+    size_t size = (strlen(buf) + 1) * sizeof(*buf);
     char* str = (char*)malloc(size + 255);
     strcpy(str, "Bucket ");
     strncat(str, buf, size);
@@ -29,30 +29,29 @@ char* __Bucket_ToString(Object* object) {
     return str;
 }
 
-typedef struct HashSet {
+struct HashSet {
     Object object;
     Bucket** buckets;
     size_t size;
     size_t capacity;
-} HashSet;
+};
 
-Bucket* __Bucket_alloc() {
+static Bucket* __Bucket_alloc() {
     return (Bucket*)malloc(sizeof(Bucket));
 }
 
-void __Bucket_ctor(Bucket* bucket) {
+static void __Bucket_ctor(Bucket* bucket) {
     Object_ctor((Object*)bucket, "Bucket");
-    Array* list = Array_alloc();
-    Array_ctor(list);
+    LinkedList* list = LinkedList_create();
     bucket->elements = list;
 
     // Setting V-Table
     bucket->object.toString = __Bucket_ToString;
 }
 
-void __Bucket_dtor(Bucket* bucket) {
+static void __Bucket_dtor(Bucket* bucket) {
     Object_dtor((Object*)bucket);
-    Array_dtor(bucket->elements);
+    LinkedList_dtor(bucket->elements);
     free(bucket);
 }
 
@@ -91,22 +90,18 @@ int HashSet_add(HashSet* hashSet, Object* el) {
     if (HashSet_contains(hashSet, el)) {
         return -1;
     }
-    if (hashSet->size >= hashSet->capacity) {
+    if (hashSet->size / hashSet->capacity >= 0.7) {
         size_t new_capacity = hashSet->capacity * 2;
-        //size_t a = Array_getSize(hashSet->buckets[0]->elements);
         Bucket** newBuckets = (Bucket**)malloc(new_capacity * sizeof(Bucket*));
         for(size_t i = 0; i < new_capacity; i++) {
             newBuckets[i] = __Bucket_alloc();
             __Bucket_ctor(newBuckets[i]);
         }
-        for (size_t i = 0; i <  hashSet->capacity; i++) {
-            if(Array_getSize(hashSet->buckets[i]->elements) > 0) {
-                // Rehash
-                for(size_t j = 0; j < Array_getSize(hashSet->buckets[i]->elements); j++) {
-                    Object* el = Array_at(hashSet->buckets[i]->elements, j);
-                    size_t newBucketNum = Object_hashCode(el) % new_capacity;
-                    Array_add(newBuckets[newBucketNum]->elements, el);
-                }
+        for (size_t i = 0; i < hashSet->capacity; i++) {
+            for(size_t j = 0; j < LinkedList_getSize(hashSet->buckets[i]->elements); j++) {
+                Object* el = LinkedList_at(hashSet->buckets[i]->elements, j);
+                size_t newBucketNum = Object_hashCode(el) % new_capacity;
+                LinkedList_insertEnd(newBuckets[newBucketNum]->elements, el);
             }
             __Bucket_dtor(hashSet->buckets[i]);
         }
@@ -115,7 +110,7 @@ int HashSet_add(HashSet* hashSet, Object* el) {
         hashSet->capacity = new_capacity;
     }
     size_t bucketNum = Object_hashCode(el) % hashSet->capacity;
-    Array_add(hashSet->buckets[bucketNum]->elements, el);
+    LinkedList_insertEnd(hashSet->buckets[bucketNum]->elements, el);
     hashSet->size++;
     return 0;
 }
@@ -130,10 +125,19 @@ void HashSet_print(HashSet* hashSet) {
 
 bool HashSet_contains(HashSet* hashSet, Object* object) {
     size_t num = Object_hashCode(object) % hashSet->capacity;
-    for(size_t i = 0; i < Array_getSize(hashSet->buckets[num]->elements); i++) {
-        if(Object_hashCode((hashSet->buckets[num]->elements, i)) == Object_hashCode(object)) {
+    for(size_t i = 0; i < LinkedList_getSize(hashSet->buckets[num]->elements); i++) {
+        if (Object_EqualsTo(LinkedList_at(hashSet->buckets[num]->elements, i), object)) {
             return true;
         }
     }
     return false;
+}
+
+void HashSet_forAll(HashSet* hs, FuncForAll func) {
+    for (size_t i = 0; i < hs->capacity; i++) {
+        for(size_t j = 0; j < LinkedList_getSize(hs->buckets[i]->elements); j++) {
+            Object* el = LinkedList_at(hs->buckets[i]->elements, j);
+            func(el);
+        }
+    }
 }
