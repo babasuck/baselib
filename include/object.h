@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 typedef struct Object Object;
+typedef void (*FuncForAll)(Object* object);
 
 void Object_ctor(Object* obj, char* name);
 void Object_dtor(Object* obj);

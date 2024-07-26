@@ -11,3 +11,7 @@ Queue* Queue_create();
 
 int Queue_Enqueue(Queue* q, Object* object);
 Object* Queue_Dequeue(Queue* q);
+
+bool Queue_isEmpty(Queue* q);
+
+void Queue_print(Queue* q);

@@ -132,3 +132,12 @@ bool HashSet_contains(HashSet* hashSet, Object* object) {
     }
     return false;
 }
+
+void HashSet_forAll(HashSet* hs, FuncForAll func) {
+    for (size_t i = 0; i < hs->capacity; i++) {
+        for(size_t j = 0; j < LinkedList_getSize(hs->buckets[i]->elements); j++) {
+            Object* el = LinkedList_at(hs->buckets[i]->elements, j);
+            func(el);
+        }
+    }
+}

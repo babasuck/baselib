@@ -5,7 +5,10 @@ add_executable(baselib
     datast/array.c 
     datast/list.c
     datast/stack.c
+    datast/queue.c
+    datast/graph.c
     types/integer.c
+    types/primitive.c
     base/object.c
     main.c
 )

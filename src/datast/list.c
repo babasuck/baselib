@@ -175,9 +175,6 @@ Object* LinkedList_removeStart(LinkedList* list) {
     return obj;
 }
 
-Object* LinkedList_removeEnd(LinkedList* list) {
-    Object* obj = list->tail->data;
-}
 
 Object* LinkedList_at(LinkedList* list, size_t at) {
     if (at >= list->len)
@@ -195,6 +192,10 @@ Object* LinkedList_at(LinkedList* list, size_t at) {
 
 size_t LinkedList_getSize(LinkedList* list) {
     return list->len;
+}
+
+bool LinkedList_isEmpty(LinkedList* list) {
+    return list->len == 0 ? true : false;
 }
  
 void LinkedList_print(LinkedList* list) {

@@ -16,5 +16,6 @@ Object* LinkedList_removeStart(LinkedList* list);
 Object* LinkedList_at(LinkedList* list, size_t at);
 
 size_t LinkedList_getSize(LinkedList* list);
+bool LinkedList_isEmpty(LinkedList* list);
 
 void LinkedList_print(LinkedList* list);

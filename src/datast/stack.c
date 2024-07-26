@@ -1,6 +1,9 @@
 #include "baselib.h"
 #include "object_p.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 struct Stack {
     Object obj;
     LinkedList* list;
@@ -41,6 +44,8 @@ Object* Stack_pop(Stack* stack) {
 void Stack_print(Stack* stack) {
     printf("Stack : size - %d\n", LinkedList_getSize(stack->list));
     for(size_t i = 0; i < LinkedList_getSize(stack->list); i++) {
-        printf("Element - %s \n", Object_toString(LinkedList_at(stack->list, i)));
+        char* buf = Object_toString(LinkedList_at(stack->list, i));
+        printf("Element - %s \n", buf);
+        free(buf);
     }
 }

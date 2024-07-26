@@ -13,7 +13,7 @@ struct Object {
     HashCode hashCode;
     Clone clone;
     EqualsTo equalsTo;
-    const char* name;
+    char* name;
 };
 
 char* Object_toString(Object* object);

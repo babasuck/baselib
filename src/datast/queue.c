@@ -1,10 +1,12 @@
 #include "baselib.h"
 
+#include "object_p.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
 struct Queue {
-    Object* object;
+    Object object;
     LinkedList* list;
 };
 
@@ -20,6 +22,7 @@ void Queue_ctor(Queue* q) {
 void Queue_dtor(Queue* q) {
     Object_dtor((Object*)q);
     LinkedList_dtor(q->list);
+    free(q);
 }
 
 Queue* Queue_create() {
@@ -34,4 +37,17 @@ int Queue_Enqueue(Queue* q, Object* object) {
 
 Object* Queue_Dequeue(Queue* q) {
     return LinkedList_removeStart(q->list);
+}
+
+bool Queue_isEmpty(Queue* q) {
+    return LinkedList_isEmpty(q->list);
+}
+
+void Queue_print(Queue* q) {
+    printf("Queue : size - %d\n", LinkedList_getSize(q->list));
+    for(size_t i = 0; i < LinkedList_getSize(q->list); i++) {
+        char* buf = Object_toString(LinkedList_at(q->list, i));
+        printf("Element - %s \n", buf);
+        free(buf);
+    }
 }

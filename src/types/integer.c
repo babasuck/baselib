@@ -14,26 +14,26 @@ struct Integer {
 
 // Overrided Virtual functions
 
-char* __Integer_toString(Object* object) {
+static char* __Integer_toString(Object* object) {
     Integer* integer = (Integer*)object;
     char* buf = (char*)malloc(255);
     _ltoa(integer->data, buf, 10);
     return buf;
 }
 
-size_t __Integer_hashCode(Object* object) {
+static size_t __Integer_hashCode(Object* object) {
     Integer* integer = (Integer*)object;
     return integer->data;
 }
 
-Object* __Integer_clone(Object* object) {
+static Object* __Integer_clone(Object* object) {
     Integer* integer = (Integer*)object;
     Integer* clone = Integer_alloc();
     Integer_ctor(clone, integer->data);
     return (Object*)clone;
 }
 
-bool __Integer_EqualsTo(Object* one, Object* two) {
+static bool __Integer_EqualsTo(Object* one, Object* two) {
     if (strcmp(one->name, two->name) || (((Integer*)one)->data != ((Integer*)two)->data))
         return false;
     return true;
@@ -66,3 +66,6 @@ Integer* Integer_create(uint64_t data) {
     return integer;
 }
 
+uint64_t Integer_getInt(Integer* integer) {
+    return integer->data;
+}

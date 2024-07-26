@@ -64,7 +64,7 @@ static Element* __Element_alloc() {
 
 static void __Element_ctor(Element* el, const char* key, Object* value) {
     Object_ctor((Object*)el, "HashMap element");
-    el->key = (char*)strdup(key);
+    el->key = (char*)_strdup(key);
     el->value = value;
 
     el->object.toString = __Element_ToString;

@@ -1,6 +1,7 @@
 #pragma once
 
 //#define _ANTILEAK
+#define _CRT_SECURE_NO_WARNINGS
 #include "antileak.h"
 
 // Base object
@@ -8,6 +9,7 @@
 
 // Data Types
 #include "integer.h"
+#include "primitive.h"
 
 // Data Structures
 #include "array.h"
